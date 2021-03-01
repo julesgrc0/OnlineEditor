@@ -30,12 +30,19 @@ public class Client {
 
     public void sendTextUpdate(String text)
     {
-        this.sendData("|"+this.code+"|"+text);
+        if(!this.socket.isClosed() && this.socket.isConnected())
+        {
+            this.sendData("|"+this.code+"|"+text);
+        }
     }
 
     public String getGlobalText()
     {
-        return this.sendData("|"+this.code+"|");
+        if(!this.socket.isClosed() && this.socket.isConnected())
+        {
+            return this.sendData("|"+this.code+"|");
+        }
+        return null;
     }
 
     private String sendData(String text)
@@ -47,13 +54,10 @@ public class Client {
             return in.readLine();
         }
         catch (IOException e) {
-            System.out.println(e.getMessage());
             try{
                 this.socket.close();
                 this.socketConnect(this.SERVER_IP, this.SERVER_PORT);
-            }catch (IOException err) {
-                System.out.println(err.getMessage());
-            }
+            }catch (IOException err) {}
         }
         return null;
     }
